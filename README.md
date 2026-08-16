@@ -5,6 +5,7 @@
 # 🚀 Maxy Research Agent
 ### *Autonomous Deep Research & Multi-Modal Synthesis Engine powered by Model Context Protocol (MCP)*
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-maxyai--qif1.onrender.com-00C7B7?style=for-the-badge&logo=render&logoColor=white)](https://maxyai-qif1.onrender.com)
 [![Python 3.12](https://img.shields.io/badge/python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![FastMCP](https://img.shields.io/badge/FastMCP-2.0-FF6F00?style=for-the-badge&logo=fastapi&logoColor=white)](https://github.com/jlowin/fastmcp)
 [![Google Gemini](https://img.shields.io/badge/Google_Gemini-3.7_Flash-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev/)
@@ -19,7 +20,7 @@
 
 **Maxy** is a production-grade autonomous research agent built on the **Model Context Protocol (MCP)**. It automates end-to-end technical investigations—extracting references from guideline files, transcribing multimodal YouTube videos, ingesting GitHub codebases, executing iterative web research, evaluating source quality, deep-scraping documentation, and synthesizing comprehensive 300+ KB research reports with verified citations.
 
-[Key Features](#-key-features) • [Architecture](#-architecture) • [Tech Stack & $0 Free Tiers](#-tech-stack--0-free-tier-stack) • [Quick Start](#-quick-start) • [Tools Reference](#-mcp-tools-reference) • [Observability](#-llmops-observability-with-comet-opik)
+🔗 **[Live Interactive Web Platform](https://maxyai-qif1.onrender.com)** • [Key Features](#-key-features) • [Architecture](#-architecture) • [Tech Stack & $0 Free Tiers](#-tech-stack--0-free-tier-stack) • [Quick Start](#-quick-start) • [Tools Reference](#-mcp-tools-reference) • [Observability](#-llmops-observability-with-comet-opik)
 
 </div>
 
@@ -257,12 +258,13 @@ OPIK_PROJECT_NAME=maxy
 ### 4. Run the Interactive Client or Web Dashboard
 
 #### Option A: Interactive Web Dashboard (UI)
-Launch the 3D dark-mode web dashboard:
-```bash
-cd mcp_server
-uv run python -m uvicorn web.server:app --app-dir /home/mack/Music/paul/nova_research_agent --host 127.0.0.1 --port 8501
-```
-Open **`http://127.0.0.1:8501`** in your browser!
+* **Live Cloud Deployment**: [https://maxyai-qif1.onrender.com](https://maxyai-qif1.onrender.com)
+* **Run Locally**:
+  ```bash
+  cd mcp_server
+  uv run python -m uvicorn web.server:app --app-dir /home/mack/Music/paul/nova_research_agent --host 127.0.0.1 --port 8501
+  ```
+  Open `http://127.0.0.1:8501` in your browser.
 
 #### Option B: Interactive Terminal CLI
 Launch the terminal client:
