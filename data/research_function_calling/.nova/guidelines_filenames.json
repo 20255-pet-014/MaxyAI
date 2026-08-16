@@ -1,0 +1,13 @@
+{
+  "github_urls": [
+    "https://github.com/openai/openai-cookbook/blob/main/examples/gpt-5/gpt-5_prompting_guide.ipynb"
+  ],
+  "youtube_videos_urls": [
+    "https://www.youtube.com/watch?v=h8gMhXYAv1k"
+  ],
+  "other_urls": [
+    "https://ai.google.dev/gemini-api/docs/function-calling",
+    "https://platform.openai.com/docs/guides/function-calling"
+  ],
+  "local_file_paths": []
+}

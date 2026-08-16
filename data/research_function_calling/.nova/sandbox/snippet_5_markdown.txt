@@ -1,0 +1,8 @@
+# Implementing Function Calling with OpenAI API
+
+### Instructions:
+1. Install the OpenAI API library.
+2. Import the library and create a model.
+3. Use the model to call a function.
+
+### Example in Code

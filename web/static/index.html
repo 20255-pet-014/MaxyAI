@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maxy AI — Autonomous Research & Technical Publishing Platform</title>
+    <!-- Google Fonts Inter 400 & 500 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/fonts.css">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    screens: {
+                        'xs': '480px',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- React 18, ReactDOM, Babel & Framer Motion -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            border-radius: 0px !important;
+            box-shadow: none !important;
+        }
+        body {
+            background-color: #000000;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            color: #ffffff;
+        }
+        .mask-logo-row {
+            mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+        }
+        /* Custom scrollbar for minimalism */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.4);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-black text-white selection:bg-white selection:text-black">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // ====================================================================
+        // Reusable CrosshairCorners Component (Exact 7x7px SVGs with 1px stroke)
+        // ====================================================================
+        const CrosshairCorners = () => (
+            <React.Fragment>
+                {/* Top-Left */}
+                <svg width="7" height="7" viewBox="0 0 7 7" fill="none" className="absolute -left-[3px] -top-[3px] pointer-events-none z-20">
+                    <line x1="0" y1="3.5" x2="7" y2="3.5" stroke="white" strokeWidth="1" />
+                    <line x1="3.5" y1="0" x2="3.5" y2="7" stroke="white" strokeWidth="1" />
+                </svg>
+                {/* Top-Right */}
+                <svg width="7" height="7" viewBox="0 0 7 7" fill="none" className="absolute -right-[3px] -top-[3px] pointer-events-none z-20">
+                    <line x1="0" y1="3.5" x2="7" y2="3.5" stroke="white" strokeWidth="1" />
+                    <line x1="3.5" y1="0" x2="3.5" y2="7" stroke="white" strokeWidth="1" />
+                </svg>
+                {/* Bottom-Left */}
+                <svg width="7" height="7" viewBox="0 0 7 7" fill="none" className="absolute -left-[3px] -bottom-[3px] pointer-events-none z-20">
+                    <line x1="0" y1="3.5" x2="7" y2="3.5" stroke="white" strokeWidth="1" />
+                    <line x1="3.5" y1="0" x2="3.5" y2="7" stroke="white" strokeWidth="1" />
+                </svg>
+                {/* Bottom-Right */}
+                <svg width="7" height="7" viewBox="0 0 7 7" fill="none" className="absolute -right-[3px] -bottom-[3px] pointer-events-none z-20">
+                    <line x1="0" y1="3.5" x2="7" y2="3.5" stroke="white" strokeWidth="1" />
+                    <line x1="3.5" y1="0" x2="3.5" y2="7" stroke="white" strokeWidth="1" />
+                </svg>
+            </React.Fragment>
+        );
+
+        // ====================================================================
+        // Maxy Logo SVG
+        // ====================================================================
+        const MaxyLogo = () => (
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+                <path d="M16.8853 0.506236C16.7212 0.79102 16.214 1.74023 15.7515 2.61032C14.4387 5.06242 14.7967 4.9042 10.6492 4.90419C8.72467 4.90419 7.15816 4.95169 7.15805 5.01497C7.17298 5.09407 7.904 5.67938 8.81407 6.328C9.75399 6.99245 10.5597 7.70442 10.679 7.94172C10.858 8.28981 10.3878 9.34986 10.358 13.6844L9.5 15.709L8 17.9998C6.26938 16.75 6.41204 15.7252 6.27776 15.3297C6.18824 15.0291 6.11363 13.7002 6.11363 12.1815V9.52369L3.12985 7.34047C1.47395 6.13825 0.0715626 5.07847 0.0116586 4.99921C-0.182289 4.74609 2.10032 0.617157 2.63747 0.284808C3.02537 0.031687 3.66691 1.09742e-07 10.112 0H17.1838L16.8853 0.506236Z" fill="white"/>
+            </svg>
+        );
+
+        // ====================================================================
+        // Tech Stack Logos for Marquee
+        // ====================================================================
+        const FastMCPLogo = () => (
+            <span className="font-mono text-xs text-white/70 uppercase tracking-widest px-3 py-1 border border-white/10 shrink-0">
+                ⚡ FastMCP 2.0
+            </span>
+        );
+        const GeminiLogo = () => (
+            <span className="font-mono text-xs text-white/70 uppercase tracking-widest px-3 py-1 border border-white/10 shrink-0">
+                ✦ Google Gemini 3.7
+            </span>
+        );
+        const GroqLogo = () => (
+            <span className="font-mono text-xs text-white/70 uppercase tracking-widest px-3 py-1 border border-white/10 shrink-0">
+                ⚡ Groq Llama 3.3
+            </span>
+        );
+        const OpikLogo = () => (
+            <span className="font-mono text-xs text-white/70 uppercase tracking-widest px-3 py-1 border border-white/10 shrink-0">
+                📊 Comet Opik
+            </span>
+        );
+        const TavilyLogo = () => (
+            <span className="font-mono text-xs text-white/70 uppercase tracking-widest px-3 py-1 border border-white/10 shrink-0">
+                🔍 Tavily Search
+            </span>
+        );
+        const FirecrawlLogo = () => (
+            <span className="font-mono text-xs text-white/70 uppercase tracking-widest px-3 py-1 border border-white/10 shrink-0">
+                🔥 Firecrawl Scrape
+            </span>
+        );
+
+        // ====================================================================
+        // Main Maxy Command Center Application
+        // ====================================================================
+        const MaxyApp = () => {
+            const [topics, setTopics] = useState([]);
+            const [currentTopic, setCurrentTopic] = useState("research_function_calling");
+            const [artifacts, setArtifacts] = useState(null);
+            const [activeTab, setActiveTab] = useState("article"); // "article" | "research" | "sandbox" | "terminal" | "opik"
+            const [selectedSandboxFile, setSelectedSandboxFile] = useState(null);
+            const [isRunning, setIsRunning] = useState(false);
+            const [progress, setProgress] = useState(0);
+            const [progressMsg, setProgressMsg] = useState("");
+            const [terminalLogs, setTerminalLogs] = useState([
+                { time: new Date().toLocaleTimeString(), text: "[SYSTEM] Maxy Autonomous Multi-Agent Engine connected via FastMCP (21 tools).", type: "system" },
+                { time: new Date().toLocaleTimeString(), text: "[OPIK] Real-time LLMOps telemetry tracing enabled on project 'maxy'.", type: "opik" },
+                { time: new Date().toLocaleTimeString(), text: "[READY] Workspace active: data/research_function_calling.", type: "success" },
+            ]);
+
+            const terminalEndRef = useRef(null);
+
+            // Fetch topics on load
+            useEffect(() => {
+                fetch("/api/topics")
+                    .then(res => res.json())
+                    .then(data => {
+                        setTopics(data);
+                        if (data.length > 0) {
+                            loadArtifacts(currentTopic);
+                        }
+                    })
+                    .catch(err => console.error("Error loading topics:", err));
+            }, []);
+
+            // Scroll terminal to bottom
+            useEffect(() => {
+                if (terminalEndRef.current) {
+                    terminalEndRef.current.scrollTop = terminalEndRef.current.scrollHeight;
+                }
+            }, [terminalLogs]);
+
+            const loadArtifacts = async (topicId) => {
+                try {
+                    const res = await fetch(`/api/artifacts/${topicId}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        setArtifacts(data);
+                        if (data.sandbox_files && data.sandbox_files.length > 0) {
+                            setSelectedSandboxFile(data.sandbox_files[0]);
+                        }
+                    }
+                } catch (err) {
+                    console.error("Error fetching artifacts:", err);
+                }
+            };
+
+            const handleTopicChange = (e) => {
+                const newTopic = e.target.value;
+                setCurrentTopic(newTopic);
+                loadArtifacts(newTopic);
+                addLog(`Switched active topic to '${newTopic}'.`, "info");
+            };
+
+            const addLog = (text, type = "info") => {
+                setTerminalLogs(prev => [...prev, { time: new Date().toLocaleTimeString(), text, type }]);
+            };
+
+            // Trigger Agent Pipeline Run via SSE
+            const triggerRun = async (phase = "all") => {
+                setIsRunning(true);
+                setProgress(5);
+                setProgressMsg(`Initializing ${phase.toUpperCase()} pipeline...`);
+                addLog(`[LAUNCH] Triggered run '${phase}' for topic '${currentTopic}'...`, "system");
+
+                try {
+                    const response = await fetch("/api/run", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ topic: currentTopic, phase }),
+                    });
+
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+
+                    while (true) {
+                        const { value, done } = await reader.read();
+                        if (done) break;
+
+                        const chunk = decoder.decode(value);
+                        const lines = chunk.split("\n");
+
+                        for (const line of lines) {
+                            if (line.startsWith("data: ")) {
+                                try {
+                                    const eventData = JSON.parse(line.slice(6));
+                                    setProgress(eventData.progress || 0);
+                                    setProgressMsg(eventData.message || "");
+                                    addLog(eventData.message, eventData.stage === "error" ? "error" : "info");
+
+                                    if (eventData.stage === "complete") {
+                                        addLog(`[SUCCESS] Run finished successfully. Reloading workspace artifacts...`, "success");
+                                        loadArtifacts(currentTopic);
+                                        setTimeout(() => setIsRunning(false), 2000);
+                                    }
+                                } catch (e) {
+                                    console.error("JSON parse error:", e);
+                                }
+                            }
+                        }
+                    }
+                } catch (err) {
+                    addLog(`Agent execution error: ${err}`, "error");
+                    setIsRunning(false);
+                }
+            };
+
+            const copyToClipboard = (text, label) => {
+                navigator.clipboard.writeText(text);
+                addLog(`[CLIPBOARD] Copied ${label} to clipboard.`, "success");
+            };
+
+            return (
+                <div className="min-h-screen w-full bg-black relative font-inter select-none flex flex-col justify-between">
+                    
+                    {/* Background Layers (Stacked, position: fixed, inset: 0, z-index: 0) */}
+                    <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+                        {/* Layer 1: Fullscreen Video */}
+                        <video
+                            src="https://pub-685757058619489a8187d7b697c15b42.r2.dev/Background%20Videos/bg-1.mp4"
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                            className="absolute inset-0 w-full h-full object-cover"
+                            style={{ opacity: 1 }}
+                        />
+                        {/* Layer 2: Subtle black overlay */}
+                        <div className="absolute inset-0 bg-black/35 pointer-events-none" />
+                        {/* Layer 3: Faint noise film overlay */}
+                        <div className="absolute inset-0 w-full h-full object-cover opacity-[0.06] pointer-events-none mix-blend-overlay" />
+                    </div>
+
+                    {/* Decorative Vertical Lines (1px lines with gradient) */}
+                    <div 
+                        className="fixed pointer-events-none z-10 hidden lg:block w-[1px]" 
+                        style={{
+                            left: '80px',
+                            top: '70%',
+                            height: '18%',
+                            background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.25), transparent)'
+                        }}
+                    />
+                    <div 
+                        className="fixed pointer-events-none z-10 hidden lg:block w-[1px]" 
+                        style={{
+                            right: '80px',
+                            top: '15%',
+                            height: '50%',
+                            background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.25), transparent)'
+                        }}
+                    />
+
+                    {/* Content Wrapper */}
+                    <div className="relative z-10 flex flex-col justify-between min-h-screen px-4 md:px-12 lg:px-[80px] pt-6 pb-8">
+                        
+                        {/* ====================================================
+                            NAVBAR
+                           ==================================================== */}
+                        <header className="relative flex items-center justify-between pb-5 border-b border-white/25 w-full">
+                            <div className="flex items-center gap-3">
+                                <MaxyLogo />
+                                <span className="font-medium text-[21px] text-white tracking-[-0.63px] capitalize leading-none">
+                                    Maxy AI
+                                </span>
+                                <span className="text-[11px] font-mono text-white/50 border border-white/20 px-2 py-0.5 ml-2 uppercase">
+                                    v1.0 • FastMCP
+                                </span>
+                            </div>
+
+                            {/* Active Topic Dropdown */}
+                            <div className="flex items-center gap-4">
+                                <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-white/60">
+                                    <span>TOPIC:</span>
+                                    <select 
+                                        value={currentTopic}
+                                        onChange={handleTopicChange}
+                                        className="bg-black/60 border border-white/25 text-white px-3 py-1.5 outline-none font-mono text-xs cursor-pointer hover:border-white/50"
+                                    >
+                                        {topics.map(t => (
+                                            <option key={t.id} value={t.id} className="bg-black text-white">
+                                                {t.id} ({Math.round(t.research_size_bytes / 1024)} KB)
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <button 
+                                    onClick={() => triggerRun("all")}
+                                    disabled={isRunning}
+                                    className="relative backdrop-blur-[3.5px] bg-white/[0.05] border border-white/25 px-5 py-2.5 text-white text-sm font-medium tracking-[-0.36px] hover:bg-white/15 transition-colors disabled:opacity-50"
+                                >
+                                    <CrosshairCorners />
+                                    {isRunning ? "Running Agent..." : "⚡ Launch Full Pipeline"}
+                                </button>
+                            </div>
+                        </header>
+
+                        {/* ====================================================
+                            HERO SECTION
+                           ==================================================== */}
+                        <section className="py-6 md:py-8 flex flex-col gap-4">
+                            <h1 className="font-medium text-2xl xs:text-3xl sm:text-[38px] md:text-[44px] text-white tracking-[-1.2px] leading-[1.18] capitalize max-w-[720px]">
+                                Autonomous Deep Research & Technical Publishing.
+                            </h1>
+                            <p className="font-normal text-xs xs:text-sm sm:text-base text-white/80 tracking-[-0.36px] leading-[1.5] max-w-[620px]">
+                                Maxy orchestrates 21 FastMCP tools across automated YouTube transcription, GitHub AST parsing, iterative web research, autonomous critic evaluation, and subprocess code sandboxing.
+                            </p>
+
+                            {/* Shimmer Progress Bar (when running) */}
+                            {isRunning && (
+                                <div className="relative border border-white/25 bg-black/60 backdrop-blur-md p-3 max-w-[720px] flex flex-col gap-2 animate-in fade-in">
+                                    <CrosshairCorners />
+                                    <div className="flex justify-between text-xs font-mono text-white/80">
+                                        <span>{progressMsg}</span>
+                                        <span>{progress}%</span>
+                                    </div>
+                                    <div className="h-1.5 w-full bg-white/10 overflow-hidden">
+                                        <div 
+                                            className="h-full bg-white transition-all duration-300"
+                                            style={{ width: `${progress}%` }}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                        </section>
+
+                        {/* ====================================================
+                            3-PHASE PIPELINE CARDS
+                           ==================================================== */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            {/* Phase 1 */}
+                            <div className="relative backdrop-blur-[3.5px] bg-white/[0.02] border border-white/20 p-5 flex flex-col justify-between gap-3 hover:bg-white/[0.04] transition-all">
+                                <CrosshairCorners />
+                                <div className="flex justify-between items-center text-xs font-mono text-white/50">
+                                    <span>PHASE 01</span>
+                                    <span className="text-white/80">310 KB Research Base</span>
+                                </div>
+                                <div>
+                                    <h3 className="text-base font-medium text-white mb-1">Deep Research Agent</h3>
+                                    <p className="text-xs text-white/70 leading-relaxed">
+                                        Multimodal YouTube transcription, GitIngest AST extraction, 3-round Tavily search, Firecrawl scraping.
+                                    </p>
+                                </div>
+                                <div className="pt-2 border-t border-white/10 flex justify-between items-center">
+                                    <span className="text-[11px] font-mono text-white/60">12 FastMCP Tools</span>
+                                    <button 
+                                        onClick={() => { setActiveTab("research"); }}
+                                        className="text-xs text-white hover:underline"
+                                    >
+                                        View Research ↗
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Phase 2 */}
+                            <div className="relative backdrop-blur-[3.5px] bg-white/[0.02] border border-white/20 p-5 flex flex-col justify-between gap-3 hover:bg-white/[0.04] transition-all">
+                                <CrosshairCorners />
+                                <div className="flex justify-between items-center text-xs font-mono text-white/50">
+                                    <span>PHASE 02</span>
+                                    <span className="text-white/80">Critic Score: 85/100</span>
+                                </div>
+                                <div>
+                                    <h3 className="text-base font-medium text-white mb-1">Writer & Critic Agent</h3>
+                                    <p className="text-xs text-white/70 leading-relaxed">
+                                        Structured outline generation, deep section drafting, autonomous peer review & numeric critique.
+                                    </p>
+                                </div>
+                                <div className="pt-2 border-t border-white/10 flex justify-between items-center">
+                                    <span className="text-[11px] font-mono text-white/60">5 FastMCP Tools</span>
+                                    <button 
+                                        onClick={() => { setActiveTab("article"); }}
+                                        className="text-xs text-white hover:underline"
+                                    >
+                                        View Article ↗
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Phase 3 */}
+                            <div className="relative backdrop-blur-[3.5px] bg-white/[0.02] border border-white/20 p-5 flex flex-col justify-between gap-3 hover:bg-white/[0.04] transition-all">
+                                <CrosshairCorners />
+                                <div className="flex justify-between items-center text-xs font-mono text-white/50">
+                                    <span>PHASE 03</span>
+                                    <span className="text-white/80">19/19 Tests Passed</span>
+                                </div>
+                                <div>
+                                    <h3 className="text-base font-medium text-white mb-1">Sandbox & Publisher</h3>
+                                    <p className="text-xs text-white/70 leading-relaxed">
+                                        AST syntax validation, isolated subprocess test runner, self-healing code repair, dark HTML bundle.
+                                    </p>
+                                </div>
+                                <div className="pt-2 border-t border-white/10 flex justify-between items-center">
+                                    <span className="text-[11px] font-mono text-white/60">4 FastMCP Tools</span>
+                                    <button 
+                                        onClick={() => { setActiveTab("sandbox"); }}
+                                        className="text-xs text-white hover:underline"
+                                    >
+                                        View Sandbox ↗
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* ====================================================
+                            WORKSPACE STUDIO: TABBED VIEWER & TERMINAL
+                           ==================================================== */}
+                        <div className="relative backdrop-blur-[3.5px] bg-black/60 border border-white/25 p-4 md:p-6 mb-6 flex flex-col gap-4">
+                            <CrosshairCorners />
+                            
+                            {/* Tabs Navigation Header */}
+                            <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-white/20">
+                                <div className="flex items-center gap-2 sm:gap-4 overflow-x-auto">
+                                    {[
+                                        { id: "article", label: "🌐 Published Article (HTML)" },
+                                        { id: "research", label: "📑 Deep Research (310 KB)" },
+                                        { id: "sandbox", label: `🧪 Code Sandbox (${artifacts?.sandbox_files?.length || 0})` },
+                                        { id: "terminal", label: "🤖 Live Terminal & Logs" },
+                                        { id: "opik", label: "📊 Opik LLMOps" },
+                                    ].map(tab => (
+                                        <button
+                                            key={tab.id}
+                                            onClick={() => setActiveTab(tab.id)}
+                                            className={`text-xs sm:text-sm font-medium pb-1.5 transition-colors whitespace-nowrap ${
+                                                activeTab === tab.id 
+                                                    ? "text-white border-b-2 border-white" 
+                                                    : "text-white/50 hover:text-white"
+                                            }`}
+                                        >
+                                            {tab.label}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                    {activeTab === "article" && (
+                                        <button 
+                                            onClick={() => copyToClipboard(artifacts?.article_md || "", "Article Markdown")}
+                                            className="text-xs font-mono text-white/70 hover:text-white border border-white/20 px-2.5 py-1"
+                                        >
+                                            📋 Copy Markdown
+                                        </button>
+                                    )}
+                                    {activeTab === "research" && (
+                                        <button 
+                                            onClick={() => copyToClipboard(artifacts?.research_md || "", "Research MD")}
+                                            className="text-xs font-mono text-white/70 hover:text-white border border-white/20 px-2.5 py-1"
+                                        >
+                                            📋 Copy Research
+                                        </button>
+                                    )}
+                                    {activeTab === "terminal" && (
+                                        <button 
+                                            onClick={() => setTerminalLogs([])}
+                                            className="text-xs font-mono text-white/70 hover:text-white border border-white/20 px-2.5 py-1"
+                                        >
+                                            Clear Logs
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* TAB 1: ARTICLE VIEWER */}
+                            {activeTab === "article" && (
+                                <div className="h-[520px] flex flex-col gap-2">
+                                    <div className="flex justify-between items-center pb-2 border-b border-white/10 text-xs font-mono text-white/60">
+                                        <span>DOCUMENT: article.html (Verified Publication Bundle)</span>
+                                        <div className="flex items-center gap-3">
+                                            <a 
+                                                href={`/article/${currentTopic}`} 
+                                                target="_blank" 
+                                                className="text-white hover:underline flex items-center gap-1"
+                                            >
+                                                ↗ Open Fullscreen
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div className="flex-1 w-full border border-white/15 bg-[#0a0d14] overflow-hidden">
+                                        {artifacts?.article_html ? (
+                                            <iframe 
+                                                srcDoc={artifacts.article_html} 
+                                                className="w-full h-full border-0" 
+                                                title="Maxy Published Technical Article"
+                                            />
+                                        ) : (
+                                            <div className="p-4 font-mono text-xs text-white/60">
+                                                No article.html found yet. Click 'Launch Full Pipeline' above.
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* TAB 2: RESEARCH VIEWER */}
+                            {activeTab === "research" && (
+                                <div className="h-[520px] overflow-y-auto pr-2">
+                                    <pre className="font-mono text-xs text-white/80 whitespace-pre-wrap leading-relaxed">
+                                        {artifacts?.research_md || "No research.md found."}
+                                    </pre>
+                                </div>
+                            )}
+
+                            {/* TAB 3: SANDBOX CODE */}
+                            {activeTab === "sandbox" && (
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 h-[520px]">
+                                    {/* File Picker List */}
+                                    <div className="border-r border-white/10 pr-3 flex flex-col gap-1.5 overflow-y-auto">
+                                        <span className="text-[11px] font-mono text-white/50 uppercase mb-1">Extracted Snippets</span>
+                                        {artifacts?.sandbox_files?.map(file => (
+                                            <button
+                                                key={file.name}
+                                                onClick={() => setSelectedSandboxFile(file)}
+                                                className={`text-left font-mono text-xs p-2 transition-colors border ${
+                                                    selectedSandboxFile?.name === file.name
+                                                        ? "border-white bg-white/10 text-white"
+                                                        : "border-transparent text-white/60 hover:text-white hover:bg-white/5"
+                                                }`}
+                                            >
+                                                {file.name}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    {/* Code Preview Area */}
+                                    <div className="md:col-span-3 flex flex-col gap-2 overflow-hidden">
+                                        <div className="flex justify-between items-center text-xs font-mono text-white/60 pb-2 border-b border-white/10">
+                                            <span>FILE: {selectedSandboxFile?.name || "None"}</span>
+                                            <span className="text-white">AST Verified Syntax</span>
+                                        </div>
+                                        <pre className="font-mono text-xs text-white/90 bg-black/60 p-4 border border-white/10 flex-1 overflow-auto whitespace-pre-wrap">
+                                            {selectedSandboxFile?.content || "Select a snippet to inspect."}
+                                        </pre>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* TAB 4: TERMINAL FEED */}
+                            {activeTab === "terminal" && (
+                                <div 
+                                    ref={terminalEndRef}
+                                    className="h-[520px] overflow-y-auto bg-black/80 p-4 border border-white/10 font-mono text-xs leading-relaxed flex flex-col gap-1.5"
+                                >
+                                    {terminalLogs.map((log, i) => (
+                                        <div key={i} className="flex gap-2">
+                                            <span className="text-white/40">[{log.time}]</span>
+                                            <span className={
+                                                log.type === "system" ? "text-white font-medium" :
+                                                log.type === "success" ? "text-white" :
+                                                log.type === "opik" ? "text-white/80 font-mono" :
+                                                log.type === "error" ? "text-red-400" :
+                                                "text-white/70"
+                                            }>
+                                                {log.text}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* TAB 5: OPIK TELEMETRY */}
+                            {activeTab === "opik" && (
+                                <div className="h-[520px] overflow-y-auto flex flex-col gap-4 pr-1">
+                                    <div className="flex justify-between items-center">
+                                        <div className="text-sm font-medium text-white flex items-center gap-2">
+                                            <span>Comet Opik LLMOps Observability</span>
+                                            <span className="text-[10px] font-mono text-white/60 border border-white/20 px-2 py-0.5 uppercase">Project: maxy</span>
+                                        </div>
+                                        <a 
+                                            href="https://www.comet.com/opik/" 
+                                            target="_blank" 
+                                            className="text-xs font-mono text-white hover:underline border border-white/20 px-3 py-1 bg-white/[0.03]"
+                                        >
+                                            Open Comet Opik Cloud ↗
+                                        </a>
+                                    </div>
+                                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                        <div className="relative border border-white/20 p-3 bg-white/[0.02]">
+                                            <CrosshairCorners />
+                                            <div className="text-xl font-medium text-white">21</div>
+                                            <div className="text-[11px] text-white/60 font-mono">FastMCP Tools</div>
+                                        </div>
+                                        <div className="relative border border-white/20 p-3 bg-white/[0.02]">
+                                            <CrosshairCorners />
+                                            <div className="text-xl font-medium text-white">19 / 19</div>
+                                            <div className="text-[11px] text-white/60 font-mono">Pytest Passed</div>
+                                        </div>
+                                        <div className="relative border border-white/20 p-3 bg-white/[0.02]">
+                                            <CrosshairCorners />
+                                            <div className="text-xl font-medium text-white">85 / 100</div>
+                                            <div className="text-[11px] text-white/60 font-mono">Critic Score</div>
+                                        </div>
+                                        <div className="relative border border-white/20 p-3 bg-white/[0.02]">
+                                            <CrosshairCorners />
+                                            <div className="text-xl font-medium text-white">$0.00</div>
+                                            <div className="text-[11px] text-white/60 font-mono">Free Tier Total</div>
+                                        </div>
+                                    </div>
+                                    <div className="relative border border-white/20 p-2 bg-black/50 flex items-center justify-center overflow-hidden">
+                                        <CrosshairCorners />
+                                        <img 
+                                            src="/static/opik_preview.jpg" 
+                                            alt="Opik Telemetry Dashboard" 
+                                            className="w-full h-auto max-h-[340px] object-contain block mx-auto" 
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* ====================================================
+                            FOOTER
+                           ==================================================== */}
+                        <footer className="flex flex-col md:flex-row items-stretch md:items-end justify-between w-full mt-auto gap-6 md:gap-4 shrink-0">
+                            
+                            {/* Technology Marquee (Left) */}
+                            <div className="w-full md:max-w-[542px] overflow-hidden mask-logo-row">
+                                <div className="flex overflow-hidden w-full">
+                                    <div className="flex items-center gap-4 shrink-0 animate-[marquee_20s_linear_infinite]" style={{ animation: "marquee 20s linear infinite" }}>
+                                        <FastMCPLogo />
+                                        <GeminiLogo />
+                                        <GroqLogo />
+                                        <OpikLogo />
+                                        <TavilyLogo />
+                                        <FirecrawlLogo />
+                                        <FastMCPLogo />
+                                        <GeminiLogo />
+                                        <GroqLogo />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Stats Card (Right) */}
+                            <div className="relative backdrop-blur-[3.5px] bg-white/[0.03] border border-white/25 px-4 sm:px-8 py-3.5 sm:py-4 flex items-stretch justify-between gap-3 sm:gap-6 shrink-0 w-full md:w-auto">
+                                <CrosshairCorners />
+
+                                {/* Column 1 */}
+                                <div className="flex-1 flex flex-col gap-0.5 items-center justify-center">
+                                    <span className="font-medium text-base sm:text-xl text-white tracking-[-0.72px] leading-tight whitespace-nowrap capitalize">
+                                        21 Tools
+                                    </span>
+                                    <div className="font-medium text-[9px] sm:text-[11px] text-white/70 text-center capitalize leading-tight">
+                                        <p>FastMCP</p>
+                                        <p>Registered</p>
+                                    </div>
+                                </div>
+
+                                <div className="w-[1px] bg-white/10 self-stretch my-1" />
+
+                                {/* Column 2 */}
+                                <div className="flex-1 flex flex-col gap-0.5 items-center justify-center">
+                                    <span className="font-medium text-base sm:text-xl text-white tracking-[-0.72px] leading-tight whitespace-nowrap capitalize">
+                                        19 / 19
+                                    </span>
+                                    <div className="font-medium text-[9px] sm:text-[11px] text-white/70 text-center capitalize leading-tight">
+                                        <p>Unit Tests</p>
+                                        <p>Passing</p>
+                                    </div>
+                                </div>
+
+                                <div className="w-[1px] bg-white/10 self-stretch my-1" />
+
+                                {/* Column 3 */}
+                                <div className="flex-1 flex flex-col gap-0.5 items-center justify-center">
+                                    <span className="font-medium text-base sm:text-xl text-white tracking-[-0.72px] leading-tight whitespace-nowrap capitalize">
+                                        85 / 100
+                                    </span>
+                                    <div className="font-medium text-[9px] sm:text-[11px] text-white/70 text-center capitalize leading-tight">
+                                        <p>Critic</p>
+                                        <p>Quality Score</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </footer>
+                    </div>
+
+                    <style>{`
+                        @keyframes marquee {
+                            0% { transform: translateX(0%); }
+                            100% { transform: translateX(-50%); }
+                        }
+                    `}</style>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById("root"));
+        root.render(<MaxyApp />);
+    </script>
+</body>
+</html>

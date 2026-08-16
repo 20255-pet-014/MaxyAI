@@ -1,0 +1,69 @@
+# ==============================================================================
+# Environment & Secrets (NEVER COMMIT SENSITIVE API KEYS)
+# ==============================================================================
+.env
+.env.*
+*.env
+mcp_server/.env
+mcp_client/.env
+!.env.example
+!mcp_server/.env.example
+!mcp_client/.env.example
+
+# ==============================================================================
+# Python & Virtual Environments
+# ==============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ==============================================================================
+# Testing & Type Checking Caches
+# ==============================================================================
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# ==============================================================================
+# IDE & System Files
+# ==============================================================================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# ==============================================================================
+# Internal Agent Scratch & Walkthrough Artifacts
+# ==============================================================================
+.agents/
+AGENTS.md
+GEMINI.md
+walkthrough.md
+implementation_plan.md
+scratch/
+*.log

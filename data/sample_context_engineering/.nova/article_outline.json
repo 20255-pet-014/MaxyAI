@@ -1,0 +1,74 @@
+{
+  "title": "The Evolution of AI Engineering: From Prompt Engineering to Context Engineering",
+  "subtitle": "Unlocking the full potential of large language models through context engineering",
+  "target_audience": "Aspiring AI engineers",
+  "estimated_read_time_minutes": 25,
+  "sections": [
+    {
+      "section_id": "section_1",
+      "title": "Why Prompt Engineering is No Longer Enough",
+      "key_points": [
+        "Prompt engineering has limitations in producing consistent and high-quality output.",
+        "Fine-tuning is becoming outdated due to its high computational costs and lack of flexibility."
+      ],
+      "target_word_count": 250,
+      "include_code": false,
+      "citations_to_reference": [
+        "https://www.entrypointai.com/blog/pre-training-vs-fine-tuning-vs-in-context-learning-of-large-language-models/",
+        "https://www.useready.com/thought-leadership/customizing-llms-for-genai-apps-fine-tuning-vs-in-context-learning"
+      ]
+    },
+    {
+      "section_id": "section_2",
+      "title": "Introduction to Context Engineering",
+      "key_points": [
+        "Context engineering is a new fine-tuning approach for LLMs, allowing for more flexibility and rapid adaptation.",
+        "Context engineering involves creating a rich context using multiple sources and processing techniques."
+      ],
+      "target_word_count": 250,
+      "include_code": false,
+      "citations_to_reference": [
+        "https://arxiv.org/html/2507.13334v1"
+      ]
+    },
+    {
+      "section_id": "section_3",
+      "title": "Components of Context Engineering",
+      "key_points": [
+        "Context retrieval and generation involves sourcing and processing relevant contextual information.",
+        "Context processing addresses the transformation and optimization of retrieved or generated context."
+      ],
+      "target_word_count": 350,
+      "include_code": true,
+      "citations_to_reference": [
+        "https://arxiv.org/html/2507.13334v1"
+      ]
+    },
+    {
+      "section_id": "section_4",
+      "title": "Challenges in Production Context Engineering",
+      "key_points": [
+        "System constraints such as input length limits can be a challenge in context engineering.",
+        "Memory hierarchies and context compression techniques are essential for efficient context management."
+      ],
+      "target_word_count": 200,
+      "include_code": false,
+      "citations_to_reference": [
+        "https://arxiv.org/html/2507.13334v1"
+      ]
+    },
+    {
+      "section_id": "section_5",
+      "title": "Tools and Solutions for Context Engineering",
+      "key_points": [
+        "There are various tools available for context engineering, including libraries for context processing and management.",
+        "These tools can be used to build and deploy AI applications that utilize context engineering."
+      ],
+      "target_word_count": 250,
+      "include_code": true,
+      "citations_to_reference": [
+        "https://arxiv.org/html/2507.13334v1"
+      ]
+    }
+  ]
+}

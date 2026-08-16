@@ -1,0 +1,3 @@
+### Implementing Function Calling with Gemini API
+
+To implement function calling with Gemini API, you can use the following code:

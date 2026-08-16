@@ -1,0 +1,29 @@
+[
+  {
+    "snippet_id": "snippet_7_python",
+    "filename": "snippet_7_python.py",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "  File \"/home/mack/Music/paul/nova_research_agent/data/research_function_calling/.nova/sandbox/snippet_7_python.py\", line 2\n    pip install gemini\n        ^^^^^^^\nSyntaxError: invalid syntax\n",
+    "duration_ms": 28.99,
+    "success": false
+  },
+  {
+    "snippet_id": "snippet_10_python",
+    "filename": "snippet_10_python.py",
+    "exit_code": 0,
+    "stdout": "Error calling tool: 'str' object has no attribute 'invoke'\nError calling tool\n",
+    "stderr": "",
+    "duration_ms": 29.94,
+    "success": true
+  },
+  {
+    "snippet_id": "snippet_4_python",
+    "filename": "snippet_4_python.py",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"/home/mack/Music/paul/nova_research_agent/data/research_function_calling/.nova/sandbox/snippet_4_python.py\", line 8, in <module>\n    model = Model()\n            ^^^^^\nNameError: name 'Model' is not defined\n",
+    "duration_ms": 28.45,
+    "success": false
+  }
+]

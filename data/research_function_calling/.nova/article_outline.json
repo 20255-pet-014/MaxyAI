@@ -1,0 +1,83 @@
+{
+  "title": "Bridging the Gap: Function Calling for AI Agents",
+  "subtitle": "Unlocking Real-World Action with LLMs",
+  "target_audience": "Senior Engineers, AI Researchers",
+  "estimated_read_time_minutes": 30,
+  "sections": [
+    {
+      "section_id": "section_1",
+      "title": "Introduction to Function Calling",
+      "key_points": [
+        "LLMs are powerful reasoners but limited in what they can do",
+        "Function calling enables agents to move from reasoning to action",
+        "Real-world examples: data retrieval, API calls, database updates"
+      ],
+      "target_word_count": 350,
+      "include_code": false,
+      "citations_to_reference": [
+        "https://ai.google.dev/gemini-api/docs/function-calling",
+        "https://platform.openai.com/docs/guides/function-calling"
+      ]
+    },
+    {
+      "section_id": "section_2",
+      "title": "How Function Calling Works",
+      "key_points": [
+        "How models determine when and what functions to call",
+        "Structure of function definitions (schemas, parameters)",
+        "The function calling loop: reasoning \u2192 calling \u2192 result handling"
+      ],
+      "target_word_count": 350,
+      "include_code": false,
+      "citations_to_reference": [
+        "https://www.meta-intelligence.tech/en/insight-function-calling",
+        "https://runloop.ai/blog/mastering-llm-function-calling-a-guide-to-enhancing-ai-capabilities"
+      ]
+    },
+    {
+      "section_id": "section_3",
+      "title": "Implementing Function Calling",
+      "key_points": [
+        "Setting up function schemas with OpenAI and Gemini APIs",
+        "Handling function responses and errors",
+        "Building simple agent loops that use function calling"
+      ],
+      "target_word_count": 350,
+      "include_code": true,
+      "citations_to_reference": [
+        "https://ai.google.dev/gemini-api/docs/function-calling",
+        "https://platform.openai.com/docs/guides/function-calling"
+      ]
+    },
+    {
+      "section_id": "section_4",
+      "title": "Advanced Patterns for Function Calling",
+      "key_points": [
+        "Handling function call failures and retries",
+        "Chaining multiple function calls for complex tasks",
+        "Optimizing function definitions for better LLM reasoning"
+      ],
+      "target_word_count": 350,
+      "include_code": true,
+      "citations_to_reference": [
+        "https://runloop.ai/blog/mastering-llm-function-calling-a-guide-to-enhancing-ai-capabilities",
+        "https://aclanthology.org/2025.findings-acl.841.pdf"
+      ]
+    },
+    {
+      "section_id": "section_5",
+      "title": "Conclusion",
+      "key_points": [
+        "Function calling as the bridge between reasoning and action",
+        "How function calling fits into the ReAct pattern",
+        "Introduction to planning and orchestrating multiple tools"
+      ],
+      "target_word_count": 350,
+      "include_code": false,
+      "citations_to_reference": [
+        "https://www.meta-intelligence.tech/en/insight-function-calling",
+        "https://runloop.ai/blog/mastering-llm-function-calling-a-guide-to-enhancing-ai-capabilities"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+# Implementing Multi-Step Tool Chains
+
+### Instructions:
+1. Define a function to call the first tool.
+2. Define a function to call the second tool.
+3. Use the first tool's result as input to the second tool.
+
+### Example in Code

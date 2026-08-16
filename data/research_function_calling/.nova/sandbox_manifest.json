@@ -1,0 +1,97 @@
+{
+  "total_snippets": 10,
+  "valid_syntax_count": 9,
+  "invalid_syntax_count": 1,
+  "snippets": [
+    {
+      "snippet_id": "snippet_1",
+      "language": "markdown",
+      "code": "# Tool Definition Format\n### OpenAI Tool Definition Format",
+      "line_estimate": 2,
+      "is_valid_syntax": true,
+      "syntax_error": null,
+      "target_filename": "snippet_1_markdown.txt"
+    },
+    {
+      "snippet_id": "snippet_2",
+      "language": "text",
+      "code": "### Anthropic Tool Definition Format",
+      "line_estimate": 1,
+      "is_valid_syntax": true,
+      "syntax_error": null,
+      "target_filename": "snippet_2_text.txt"
+    },
+    {
+      "snippet_id": "snippet_3",
+      "language": "text",
+      "code": "In the above examples, we can see the different formats used by OpenAI and Anthropic for tool definitions. The OpenAI format uses a `tools` array, while the Anthropic format uses a `tools` array with a specific `id`, `name`, and `input` object.\n\n### Function Calling Loop\n\nThe function calling loop consists of three primary stages:\n\n1.  **Reasoning:** The model uses its NLP capabilities to identify the function call and determine the required parameters.\n2.  **Calling:** The model invokes the function using the identified parameters, which may involve interacting with external systems, APIs, databases, or tools.\n3.  **Result Handling:** The model receives the result of the function call and processes it accordingly, which may involve handling errors, parsing output, or performing further actions.\n\nTo illustrate this loop, let's consider an example where we use a model to call a function that retrieves data from a database. The model would first reason about the function call, identifying the function name and required parameters. The model would then call the function, passing in the identified parameters, and receive the result. Finally, the model would handle the result, parsing the output and performing any necessary further actions.",
+      "line_estimate": 11,
+      "is_valid_syntax": true,
+      "syntax_error": null,
+      "target_filename": "snippet_3_text.txt"
+    },
+    {
+      "snippet_id": "snippet_4",
+      "language": "python",
+      "code": "# Define a function to retrieve data from a database\ndef retrieve_data(database, query):\n    # Invoke the function using the identified parameters\n    result = database.query(query)\n    return result\n\n# Create a model and use it to call the function\nmodel = Model()\nresult = model.call_function(\"retrieve_data\", [\"database\", \"query\"])\n\n# Process the result\nif result:\n    print(\"Data retrieved successfully\")\nelse:\n    print(\"Error retrieving data\")",
+      "line_estimate": 15,
+      "is_valid_syntax": true,
+      "syntax_error": null,
+      "target_filename": "snippet_4_python.py"
+    },
+    {
+      "snippet_id": "snippet_5",
+      "language": "markdown",
+      "code": "# Implementing Function Calling with OpenAI API\n\n### Instructions:\n1. Install the OpenAI API library.\n2. Import the library and create a model.\n3. Use the model to call a function.\n\n### Example in Code",
+      "line_estimate": 8,
+      "is_valid_syntax": true,
+      "syntax_error": null,
+      "target_filename": "snippet_5_markdown.txt"
+    },
+    {
+      "snippet_id": "snippet_6",
+      "language": "text",
+      "code": "### Implementing Function Calling with Gemini API\n\nTo implement function calling with Gemini API, you can use the following code:",
+      "line_estimate": 3,
+      "is_valid_syntax": true,
+      "syntax_error": null,
+      "target_filename": "snippet_6_text.txt"
+    },
+    {
+      "snippet_id": "snippet_7",
+      "language": "python",
+      "code": "# Install the Gemini API library\npip install gemini\n\n# Import the library and create a model\nfrom gemini.api import Model\n\nmodel = Model()\n\n# Use the model to call a function\nresult = model.call_function(\"example_function\", [\"param1\", \"param2\"])\n\n# Process the result\nif result:\n    print(\"Function called successfully\")\nelse:\n    print(\"Error calling function\")",
+      "line_estimate": 16,
+      "is_valid_syntax": false,
+      "syntax_error": "SyntaxError at line 2: invalid syntax",
+      "target_filename": "snippet_7_python.py"
+    },
+    {
+      "snippet_id": "snippet_8",
+      "language": "markdown",
+      "code": "# Implementing Multi-Step Tool Chains\n\n### Instructions:\n1. Define a function to call the first tool.\n2. Define a function to call the second tool.\n3. Use the first tool's result as input to the second tool.\n\n### Example in Code",
+      "line_estimate": 8,
+      "is_valid_syntax": true,
+      "syntax_error": null,
+      "target_filename": "snippet_8_markdown.txt"
+    },
+    {
+      "snippet_id": "snippet_9",
+      "language": "text",
+      "code": "### Error Handling\n\nTo implement error handling, you can use the following code:",
+      "line_estimate": 3,
+      "is_valid_syntax": true,
+      "syntax_error": null,
+      "target_filename": "snippet_9_text.txt"
+    },
+    {
+      "snippet_id": "snippet_10",
+      "language": "python",
+      "code": "# Define a function to call a tool\ndef call_tool(tool_name, input_data):\n    try:\n        # Invoke the tool using the input data\n        result = tool_name.invoke(input_data)\n        return result\n    except Exception as e:\n        # Catch any exceptions raised during function calling\n        print(f\"Error calling tool: {e}\")\n        return None\n\n# Use the function to call a tool\nresult = call_tool(\"example_tool\", \"input_data\")\n\n# Process the result\nif result:\n    print(\"Tool called successfully\")\nelse:\n    print(\"Error calling tool\")",
+      "line_estimate": 19,
+      "is_valid_syntax": true,
+      "syntax_error": null,
+      "target_filename": "snippet_10_python.py"
+    }
+  ]
+}

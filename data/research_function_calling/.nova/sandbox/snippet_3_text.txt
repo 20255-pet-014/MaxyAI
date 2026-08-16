@@ -1,0 +1,11 @@
+In the above examples, we can see the different formats used by OpenAI and Anthropic for tool definitions. The OpenAI format uses a `tools` array, while the Anthropic format uses a `tools` array with a specific `id`, `name`, and `input` object.
+
+### Function Calling Loop
+
+The function calling loop consists of three primary stages:
+
+1.  **Reasoning:** The model uses its NLP capabilities to identify the function call and determine the required parameters.
+2.  **Calling:** The model invokes the function using the identified parameters, which may involve interacting with external systems, APIs, databases, or tools.
+3.  **Result Handling:** The model receives the result of the function call and processes it accordingly, which may involve handling errors, parsing output, or performing further actions.
+
+To illustrate this loop, let's consider an example where we use a model to call a function that retrieves data from a database. The model would first reason about the function call, identifying the function name and required parameters. The model would then call the function, passing in the identified parameters, and receive the result. Finally, the model would handle the result, parsing the output and performing any necessary further actions.
