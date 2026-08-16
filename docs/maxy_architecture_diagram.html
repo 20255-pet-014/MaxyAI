@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maxy AI • End-to-End System Architecture</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-paper: #080c14;
+            --bg-card: rgba(17, 24, 39, 0.7);
+            --bg-card-subtle: rgba(255, 255, 255, 0.02);
+            --border-hairline: rgba(255, 255, 255, 0.1);
+            --border-accent: rgba(6, 182, 212, 0.4);
+            
+            --ink-primary: #f8fafc;
+            --ink-secondary: #94a3b8;
+            --ink-muted: #64748b;
+            
+            --accent-cyan: #06b6d4;
+            --accent-purple: #8b5cf6;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-rose: #f43f5e;
+            
+            --font-main: 'Inter', -apple-system, sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: var(--bg-paper);
+            color: var(--ink-primary);
+            font-family: var(--font-main);
+            padding: 3rem 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .diagram-container {
+            max-width: 1280px;
+            width: 100%;
+            background: #0b0f19;
+            border: 1px solid var(--border-hairline);
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+            position: relative;
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Editorial Header */
+        .diagram-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-bottom: 1px solid var(--border-hairline);
+            padding-bottom: 1.5rem;
+        }
+
+        .header-left h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--ink-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .tag-version {
+            font-family: var(--font-code);
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.2rem 0.5rem;
+            border: 1px solid var(--border-accent);
+            color: var(--accent-cyan);
+            background: rgba(6, 182, 212, 0.1);
+        }
+
+        .header-left p {
+            font-size: 0.9rem;
+            color: var(--ink-secondary);
+            margin-top: 0.4rem;
+        }
+
+        .header-meta {
+            display: flex;
+            gap: 1.25rem;
+            font-family: var(--font-code);
+            font-size: 0.75rem;
+            color: var(--ink-muted);
+        }
+
+        .meta-item { display: flex; align-items: center; gap: 0.4rem; }
+        .meta-dot { width: 6px; height: 6px; border-radius: 50%; }
+        .meta-dot.cyan { background: var(--accent-cyan); }
+        .meta-dot.purple { background: var(--accent-purple); }
+        .meta-dot.emerald { background: var(--accent-emerald); }
+
+        /* Layers Grid */
+        .layer-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .layer-label {
+            font-family: var(--font-code);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .layer-label::after {
+            content: '';
+            flex-grow: 1;
+            height: 1px;
+            background: var(--border-hairline);
+        }
+
+        .grid-ingress {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .node-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-hairline);
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .node-card:hover {
+            border-color: var(--border-accent);
+            background: rgba(17, 24, 39, 0.9);
+        }
+
+        .node-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--ink-primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .node-sub {
+            font-size: 0.8rem;
+            color: var(--ink-secondary);
+            line-height: 1.5;
+        }
+
+        .node-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 0.5rem;
+        }
+
+        .tag {
+            font-family: var(--font-code);
+            font-size: 0.68rem;
+            background: var(--bg-card-subtle);
+            border: 1px solid var(--border-hairline);
+            padding: 0.15rem 0.4rem;
+            color: var(--ink-secondary);
+        }
+
+        /* 3-Phase Multi-Agent Core Grid */
+        .grid-phases {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .phase-card {
+            border-top: 2px solid var(--border-hairline);
+        }
+        .phase-card.p1 { border-top-color: var(--accent-cyan); }
+        .phase-card.p2 { border-top-color: var(--accent-purple); }
+        .phase-card.p3 { border-top-color: var(--accent-emerald); }
+
+        .phase-number {
+            font-family: var(--font-code);
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--ink-muted);
+        }
+
+        .phase-output {
+            margin-top: 0.75rem;
+            padding: 0.5rem 0.75rem;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px dashed var(--border-hairline);
+            font-family: var(--font-code);
+            font-size: 0.72rem;
+            color: var(--accent-cyan);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Failover Matrix */
+        .grid-matrix {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .failover-banner {
+            background: rgba(139, 92, 246, 0.05);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .flow-chain {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: var(--font-code);
+            font-size: 0.8rem;
+        }
+
+        .flow-step {
+            padding: 0.35rem 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-hairline);
+            color: var(--ink-primary);
+        }
+
+        .flow-step.focal {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+            background: rgba(6, 182, 212, 0.1);
+        }
+
+        .flow-arrow { color: var(--ink-muted); font-size: 0.9rem; }
+
+        /* Crosshair Corner Markers */
+        .corner {
+            position: absolute;
+            width: 7px;
+            height: 7px;
+            pointer-events: none;
+        }
+        .corner.tl { top: -3px; left: -3px; }
+        .corner.tr { top: -3px; right: -3px; }
+        .corner.bl { bottom: -3px; left: -3px; }
+        .corner.br { bottom: -3px; right: -3px; }
+
+        /* Footer */
+        .diagram-footer {
+            border-top: 1px solid var(--border-hairline);
+            padding-top: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--font-code);
+            font-size: 0.75rem;
+            color: var(--ink-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="diagram-container">
+        
+        <!-- HEADER -->
+        <header class="diagram-header">
+            <div class="header-left">
+                <h1>
+                    MAXY AI • SYSTEM ARCHITECTURE
+                    <span class="tag-version">MCP ENGINE v1.0</span>
+                </h1>
+                <p>Autonomous Research, Technical Writing, AST Sandbox Evaluation & Multi-Modal Publishing Engine</p>
+            </div>
+            <div class="header-meta">
+                <div class="meta-item"><span class="meta-dot cyan"></span> 21 FastMCP Tools</div>
+                <div class="meta-item"><span class="meta-dot purple"></span> Comet Opik LLMOps</div>
+                <div class="meta-item"><span class="meta-dot emerald"></span> $0 Free-Tier Stack</div>
+            </div>
+        </header>
+
+        <!-- TIER 1: INGRESS & CONTROL LAYER -->
+        <section class="layer-section">
+            <div class="layer-label">01 / Ingress & Interactive Control Plane</div>
+            <div class="grid-ingress">
+                <div class="node-card">
+                    <div class="node-title">
+                        <span>🌐 Interactive Web Dashboard (UI)</span>
+                        <span class="tag">Port 8501</span>
+                    </div>
+                    <p class="node-sub">
+                        FastAPI backend with Server-Sent Events (SSE) streaming real-time model reasoning, live terminal logs, and multi-artifact tabbed inspector.
+                    </p>
+                    <div class="node-tags">
+                        <span class="tag">FastAPI</span>
+                        <span class="tag">React 18</span>
+                        <span class="tag">SSE Streamer</span>
+                        <span class="tag">Render Cloud</span>
+                    </div>
+                </div>
+
+                <div class="node-card">
+                    <div class="node-title">
+                        <span>💻 FastMCP Terminal Client (CLI)</span>
+                        <span class="tag">mcp_client</span>
+                    </div>
+                    <p class="node-sub">
+                        Interactive console harness connecting via stdio transport to execute automated slash prompts (`/prompt/full_research_instructions_prompt`).
+                    </p>
+                    <div class="node-tags">
+                        <span class="tag">Asyncio</span>
+                        <span class="tag">Pydantic Settings</span>
+                        <span class="tag">Opik Tracker</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TIER 2: 3-PHASE MULTI-AGENT EXECUTION PIPELINE -->
+        <section class="layer-section">
+            <div class="layer-label">02 / 3-Phase Multi-Agent Execution Lifecycle</div>
+            <div class="grid-phases">
+                
+                <!-- Phase 1 Card -->
+                <div class="node-card phase-card p1">
+                    <div class="phase-number">PHASE 01 • INGESTION & DISCOVERY</div>
+                    <div class="node-title">Deep Research Agent</div>
+                    <p class="node-sub">
+                        Parses guidelines, transcribes multimodal YouTube lectures, extracts GitIngest repos, and runs 3 rounds of Tavily discovery.
+                    </p>
+                    <div class="node-tags">
+                        <span class="tag">YouTube Audio/Video</span>
+                        <span class="tag">Tavily Search</span>
+                        <span class="tag">Firecrawl</span>
+                        <span class="tag">GitIngest</span>
+                    </div>
+                    <div class="phase-output">
+                        <span>ARTIFACT</span>
+                        <span>research.md (310 KB / 6,318 L)</span>
+                    </div>
+                </div>
+
+                <!-- Phase 2 Card -->
+                <div class="node-card phase-card p2">
+                    <div class="phase-number">PHASE 02 • SYNTHESIS & REVIEW</div>
+                    <div class="node-title">Writer & Critic Agent</div>
+                    <p class="node-sub">
+                        Builds structured Pydantic outlines, drafts deep technical sections with code, and executes autonomous peer reviews with numeric scoring.
+                    </p>
+                    <div class="node-tags">
+                        <span class="tag">Llama 3.1 8B</span>
+                        <span class="tag">Outline Schema</span>
+                        <span class="tag">Critic Scoring (85/100)</span>
+                    </div>
+                    <div class="phase-output">
+                        <span>ARTIFACT</span>
+                        <span>article.md (1,462 Words)</span>
+                    </div>
+                </div>
+
+                <!-- Phase 3 Card -->
+                <div class="node-card phase-card p3">
+                    <div class="phase-number">PHASE 03 • EVALUATION & PUBLISHING</div>
+                    <div class="node-title">Sandbox & Publisher Agent</div>
+                    <p class="node-sub">
+                        Extracts code blocks via AST, executes Python scripts in an isolated subprocess with 5s timeout, and auto-fixes errors with self-reflection.
+                    </p>
+                    <div class="node-tags">
+                        <span class="tag">ast.parse()</span>
+                        <span class="tag">Subprocess Sandbox</span>
+                        <span class="tag">HTML Compiler</span>
+                    </div>
+                    <div class="phase-output">
+                        <span>ARTIFACT</span>
+                        <span>article.html (19 KB Standalone)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TIER 3: ZERO-BUDGET FAILOVER MATRIX & LLMOPS OBSERVABILITY -->
+        <section class="layer-section">
+            <div class="layer-label">03 / Zero-Budget Failover Engine & Observability</div>
+            <div class="grid-matrix">
+                
+                <div class="failover-banner">
+                    <div class="node-title">
+                        <span>🛡️ Dynamic Multi-Model Failover Topology</span>
+                        <span class="tag">Zero-Drift Resilience</span>
+                    </div>
+                    <p class="node-sub">
+                        Automatic fallback across free-tier API quotas with exponential backoff and rate-limit guardrails.
+                    </p>
+                    <div class="flow-chain">
+                        <div class="flow-step focal">Gemini 3.7 Flash</div>
+                        <div class="flow-arrow">➔ 429/Fail ➔</div>
+                        <div class="flow-step">Groq Llama 3.3 70B</div>
+                        <div class="flow-arrow">➔ 413/Fail ➔</div>
+                        <div class="flow-step">Groq Llama 3.1 8B</div>
+                        <div class="flow-arrow">➔ Search ➔</div>
+                        <div class="flow-step">Puter Perplexity</div>
+                    </div>
+                </div>
+
+                <div class="node-card">
+                    <div class="node-title">
+                        <span>📊 Comet Opik LLMOps</span>
+                        <span class="tag">Tracing</span>
+                    </div>
+                    <p class="node-sub">
+                        Full-span latency tracing, token cost tracking, and tool execution logs for project `maxy`.
+                    </p>
+                    <div class="node-tags">
+                        <span class="tag">opik.track</span>
+                        <span class="tag">Thread ID Context</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="diagram-footer">
+            <div>Engineered with <strong>Model Context Protocol (FastMCP)</strong> & <strong>Astral UV</strong></div>
+            <div>Deployment: <strong>https://maxyai-qif1.onrender.com</strong> • Repository: <strong>20255-pet-014/MaxyAI</strong></div>
+        </footer>
+    </div>
+</body>
+</html>

@@ -39,7 +39,13 @@
 
 ---
 
-## 🏗️ Architecture & Data Flow
+## 🏗️ Architecture & System Topology
+
+<div align="center">
+
+![Maxy AI System Architecture](docs/assets/maxy_architecture_diagram.png)
+
+</div>
 
 ```mermaid
 flowchart TB
