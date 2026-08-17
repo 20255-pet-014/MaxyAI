@@ -67,3 +67,14 @@ walkthrough.md
 implementation_plan.md
 scratch/
 *.log
+
+# ==============================================================================
+# Personal Study, Interview Case Studies & Blog Drafts (Keep Local)
+# ==============================================================================
+docs/INTERVIEW_CASE_STUDY_PHASE_1.md
+docs/CODEBASE_EXPLANATION.md
+docs/PHASE_3_BUILDER_SANDBOX_REPORT.md
+docs/TDS_BLOG_POST_DRAFT.md
+docs/*.html
+docs/*.svg
+

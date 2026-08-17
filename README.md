@@ -43,114 +43,19 @@
 
 <div align="center">
 
-![Maxy AI System Architecture](docs/assets/maxy_architecture_diagram.png)
+![MaxyAI Multi-Agent System Architecture](docs/assets/maxy_system_architecture.png)
 
 </div>
-
-```mermaid
-flowchart TB
-    subgraph ClientLayer ["🖥️ Maxy MCP Client (Interactive CLI)"]
-        CLI["CLI Interactive Shell\n(src.client)"]
-        MsgHandler["Command Router\n(/prompt, /tools, /resources)"]
-        ReActLoop["ReAct Orchestration Loop\n(handle_agent_loop)"]
-        FailoverEngine["Dynamic Model Failover Engine\n(Gemini 3.6/3.7/Flash-Lite / Groq)"]
-        
-        CLI --> MsgHandler --> ReActLoop --> FailoverEngine
-    end
-
-    subgraph TransportLayer ["⚡ Transport Layer"]
-        InMemory["FastMCP In-Memory Transport\n(Async Context & In-Process Pipes)"]
-    end
-
-    subgraph ServerLayer ["⚙️ Maxy FastMCP Server (mcp_server)"]
-        FastMCPServer["FastMCP Router\n(create_mcp_server)"]
-        ToolsRegistry["12 Tool Handlers\n(Routers & Tools)"]
-        PromptsRegistry["Prompt Templates\n(full_research_instructions)"]
-        ResourcesRegistry["Dynamic Resources\n(Maxy Data Store)"]
-        
-        FastMCPServer --> ToolsRegistry
-        FastMCPServer --> PromptsRegistry
-        FastMCPServer --> ResourcesRegistry
-    end
-
-    subgraph ExternalProviders ["🌐 Zero-Budget Free-Tier Providers ($0)"]
-        Tavily["Tavily Search API\n(1,000 queries/mo)"]
-        Firecrawl["Firecrawl Web Scraper\n(500 free pages)"]
-        GoogleGenAI["Google Gemini API\n(Multimodal & 1M TPM)"]
-        GroqCloud["Groq Cloud Llama 3.1/3.3\n(14.4k req/day)"]
-        GitIngest["GitIngest Core\n(GitHub Ingestion)"]
-        OpikAPI["Comet Opik Cloud\n(Project: maxy)"]
-    end
-
-    ClientLayer <==> InMemory <==> ServerLayer
-    ToolsRegistry --> Tavily
-    ToolsRegistry --> Firecrawl
-    ToolsRegistry --> GoogleGenAI
-    ToolsRegistry --> GroqCloud
-    ToolsRegistry --> GitIngest
-    ClientLayer -.-> OpikAPI
-    ServerLayer -.-> OpikAPI
-```
 
 ---
 
 ## 🔄 The 6-Stage Research Lifecycle
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor User as 👤 User / Terminal
-    participant Client as 🖥️ Maxy Client
-    participant Server as ⚙️ FastMCP Server
-    participant Ext as 🌐 Web & Multimodal Services
-    participant Disk as 📁 Research Directory (.nova/)
+<div align="center">
 
-    Note over User, Disk: Stage 1: Setup & Reference Extraction
-    User->>Client: /prompt/full_research_instructions_prompt + Path
-    Client->>Server: call_tool("extract_guidelines_urls")
-    Server->>Disk: Read article_guideline.md
-    Server->>Disk: Write .nova/guidelines_filenames.json
-    Server-->>Client: Return JSON URLs Summary
+![The 6-Stage Research Lifecycle](docs/assets/maxy_research_lifecycle.png)
 
-    Note over User, Disk: Stage 2: Parallel Resource Ingestion
-    par YouTube Transcription
-        Client->>Server: call_tool("transcribe_youtube_urls")
-        Server->>Ext: Multimodal Video Ingestion (Gemini)
-        Server->>Disk: Write .nova/urls_from_guidelines_youtube_videos/
-    and Web URLs Clean
-        Client->>Server: call_tool("scrape_and_clean_other_urls")
-        Server->>Ext: Firecrawl Scrape + Llama 3.1 8B Clean
-        Server->>Disk: Write .nova/urls_from_guidelines/
-    and GitHub Analysis
-        Client->>Server: call_tool("process_github_urls")
-        Server->>Ext: GitIngest repository parsing
-        Server->>Disk: Write .nova/urls_from_guidelines_code/
-    end
-
-    Note over User, Disk: Stage 3: Iterative 3-Round Research Loop
-    loop 3 Iterations
-        Client->>Server: call_tool("generate_next_queries")
-        Server->>Disk: Read guidelines + prior research
-        Server->>Disk: Write .nova/next_queries.json
-        Client->>Server: call_tool("run_web_research")
-        Server->>Ext: Tavily Search API
-        Server->>Disk: Append to .nova/perplexity_research.json
-    end
-
-    Note over User, Disk: Stage 4: Quality Selection & Deep Scraping
-    Client->>Server: call_tool("select_research_sources_to_scrape")
-    Server->>Disk: Save .nova/sources_to_scrape.json
-    Client->>Server: call_tool("scrape_research_urls")
-    Server->>Ext: Firecrawl Deep Scraping
-    Server->>Disk: Save .nova/scraped_research_urls/
-
-    Note over User, Disk: Stage 5: Compilation & Synthesis
-    Client->>Server: call_tool("create_research_file")
-    Server->>Disk: Read all scraped markdown & summaries
-    Server->>Disk: Compile research.md (6,300+ lines / 310 KB)
-    Server-->>Client: ✅ Research Complete
-    Client-->>User: Present Final research.md
-```
+</div>
 
 ---
 
